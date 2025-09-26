@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_travel_alarm/common_widgets/app_background.dart';
 import 'package:smart_travel_alarm/common_widgets/common_button.dart';
-import 'package:smart_travel_alarm/common_widgets/page_indicator.dart';
+import 'package:smart_travel_alarm/features/onboarding/widgets/page_indicator.dart';
 import 'package:smart_travel_alarm/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:smart_travel_alarm/features/onboarding/widgets/onboarding_top_content.dart';
 
