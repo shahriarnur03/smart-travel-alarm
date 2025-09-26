@@ -5,7 +5,7 @@ import 'package:smart_travel_alarm/common_widgets/common_button.dart';
 import 'package:smart_travel_alarm/constants/app_text_styles.dart';
 import 'package:smart_travel_alarm/features/home/pages/home_screen.dart';
 import 'package:smart_travel_alarm/features/location/widgets/location_button.dart';
-import 'package:smart_travel_alarm/services/location_service.dart';
+import 'package:smart_travel_alarm/helpers/location_service.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});

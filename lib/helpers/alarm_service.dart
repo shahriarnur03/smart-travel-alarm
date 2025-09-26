@@ -1,5 +1,5 @@
 import 'package:smart_travel_alarm/features/home/models/alarm_model.dart';
-import 'package:smart_travel_alarm/services/notification_service.dart';
+import 'package:smart_travel_alarm/helpers/notification_service.dart';
 
 class AlarmService {
   final NotificationService _notificationService = NotificationService();

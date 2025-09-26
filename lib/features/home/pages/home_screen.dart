@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_travel_alarm/common_widgets/app_background.dart';
 import 'package:smart_travel_alarm/constants/app_text_styles.dart';
 import 'package:smart_travel_alarm/features/home/widgets/alarm_list.dart';
-import 'package:smart_travel_alarm/services/alarm_service.dart';
+import 'package:smart_travel_alarm/helpers/alarm_service.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? selectedLocation;

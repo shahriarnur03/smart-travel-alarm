@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_travel_alarm/features/onboarding/pages/onboarding_screen.dart';
-import 'package:smart_travel_alarm/services/notification_service.dart';
+import 'package:smart_travel_alarm/helpers/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

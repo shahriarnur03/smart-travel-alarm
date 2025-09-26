@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_travel_alarm/features/home/widgets/alarm_card.dart';
 import 'package:smart_travel_alarm/features/home/models/alarm_model.dart';
-import 'package:smart_travel_alarm/services/alarm_service.dart';
+import 'package:smart_travel_alarm/helpers/alarm_service.dart';
 
 /// Widget that displays and manages a list of alarms
 class AlarmList extends StatefulWidget {
