@@ -32,6 +32,11 @@ class OnboardingController extends GetxController {
     currentPage.value = index;
   }
   
+  // Method to skip onboarding and go directly to location screen
+  void skipOnboarding() {
+    Get.off(() => const LocationScreen());
+  }
+  
   // Clean up resources when controller is disposed
   @override
   void onClose() {

@@ -98,9 +98,10 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -127,8 +128,14 @@ class _LocationScreenState extends State<LocationScreen> {
               const SizedBox(height: 24),
               Center(
                 child: Container(
-                  width: 296,
-                  height: 296,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.width * 0.6,
+                  constraints: const BoxConstraints(
+                    maxWidth: 296,
+                    maxHeight: 296,
+                    minWidth: 200,
+                    minHeight: 200,
+                  ),
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -189,10 +196,12 @@ class _LocationScreenState extends State<LocationScreen> {
                   },
                 ),
               ),
+              const SizedBox(height: 20), // Extra padding for landscape
             ],
           ),
         ),
       ),
+    ),
     );
   }
 }
