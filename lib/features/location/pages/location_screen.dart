@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:smart_travel_alarm/common_widgets/app_background.dart';
 import 'package:smart_travel_alarm/common_widgets/common_button.dart';
@@ -27,55 +26,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Future<void> _getCurrentLocation() async {
     await locationController.getCurrentLocation();
-    
-    // Show success dialog if location was found
-    if (locationController.currentLocation.value != null) {
-      String message = 'Your current location: ${locationController.currentLocation.value}';
-      if (locationController.currentLocation.value!.contains('Lat:')) {
-        message += '\n\n(Address lookup failed)';
-      }
-      
-      _showLocationDialog(
-        'Location Found',
-        message,
-        true,
-      );
-    } else if (locationController.hasError.value) {
-      _showLocationDialog(
-        'Location Error',
-        locationController.errorMessage.value,
-        false,
-      );
-    }
-  }
-
-  void _showLocationDialog(String title, String message, bool isSuccess) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            if (!isSuccess && (message.contains('permissions') || message.contains('Location services')))
-              TextButton(
-                child: const Text('Open Settings'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  // Open app settings
-                  Geolocator.openAppSettings();
-                },
-              ),
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    // No popup - location updates silently in the UI
   }
 
   @override
