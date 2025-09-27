@@ -29,4 +29,28 @@ class AlarmModel {
       scheduledDateTime: scheduledDateTime ?? this.scheduledDateTime,
     );
   }
+
+  /// Convert alarm to JSON map for storage
+  Map<String, dynamic> toJson() {
+    return {
+      'time': time,
+      'date': date,
+      'isEnabled': isEnabled,
+      'notificationId': notificationId,
+      'scheduledDateTime': scheduledDateTime?.toIso8601String(),
+    };
+  }
+
+  /// Create alarm from JSON map
+  factory AlarmModel.fromJson(Map<String, dynamic> json) {
+    return AlarmModel(
+      time: json['time'] ?? '',
+      date: json['date'] ?? '',
+      isEnabled: json['isEnabled'] ?? false,
+      notificationId: json['notificationId'] ?? 0,
+      scheduledDateTime: json['scheduledDateTime'] != null 
+          ? DateTime.parse(json['scheduledDateTime']) 
+          : null,
+    );
+  }
 }

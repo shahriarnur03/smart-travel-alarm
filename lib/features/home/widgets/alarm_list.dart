@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_travel_alarm/features/home/widgets/alarm_card.dart';
 import 'package:smart_travel_alarm/features/home/models/alarm_model.dart';
 import 'package:smart_travel_alarm/helpers/alarm_service.dart';
+import 'package:smart_travel_alarm/helpers/alarm_storage_service.dart';
 
 /// Widget that displays and manages a list of alarms
 class AlarmList extends StatefulWidget {
@@ -14,27 +15,66 @@ class AlarmList extends StatefulWidget {
 class AlarmListState extends State<AlarmList> {
   final AlarmService _alarmService = AlarmService();
   
-  /// List of all alarms - keeping the same initial data as before
-  final List<AlarmModel> _alarms = [
-    const AlarmModel(
-      time: '7:10 pm',
-      date: 'Fri 21 Mar 2025',
-      isEnabled: true,
-      notificationId: 1,
-    ),
-    const AlarmModel(
-      time: '6:55 pm',
-      date: 'Fri 21 Mar 2025',
-      isEnabled: false,
-      notificationId: 2,
-    ),
-    const AlarmModel(
-      time: '7:10 pm',
-      date: 'Fri 21 Mar 2025',
-      isEnabled: true,
-      notificationId: 3,
-    ),
-  ];
+  /// List of all alarms - loaded from storage
+  List<AlarmModel> _alarms = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAlarms();
+  }
+
+  /// Load alarms from storage
+  Future<void> _loadAlarms() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final List<AlarmModel> loadedAlarms = await AlarmStorageService.loadAlarms();
+      
+      // If no alarms exist, create some sample data
+      if (loadedAlarms.isEmpty) {
+        final List<AlarmModel> sampleAlarms = [
+          const AlarmModel(
+            time: '7:10 pm',
+            date: 'Fri 21 Mar 2025',
+            isEnabled: true,
+            notificationId: 1,
+          ),
+          const AlarmModel(
+            time: '6:55 pm',
+            date: 'Fri 21 Mar 2025',
+            isEnabled: false,
+            notificationId: 2,
+          ),
+          const AlarmModel(
+            time: '7:10 pm',
+            date: 'Fri 21 Mar 2025',
+            isEnabled: true,
+            notificationId: 3,
+          ),
+        ];
+        
+        // Save sample data
+        await AlarmStorageService.saveAlarms(sampleAlarms);
+        setState(() {
+          _alarms = sampleAlarms;
+        });
+      } else {
+        setState(() {
+          _alarms = loadedAlarms;
+        });
+      }
+    } catch (e) {
+      _showError('Failed to load alarms');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   /// Toggle alarm on/off
   Future<void> _toggleAlarm(int index) async {
@@ -42,9 +82,13 @@ class AlarmListState extends State<AlarmList> {
       final currentAlarm = _alarms[index];
       final toggledAlarm = await _alarmService.toggleAlarm(currentAlarm);
       
+      // Update in memory
       setState(() {
         _alarms[index] = toggledAlarm;
       });
+      
+      // Save to storage
+      await AlarmStorageService.saveAlarms(_alarms);
     } catch (e) {
       _showError('Failed to toggle alarm');
     }
@@ -63,12 +107,21 @@ class AlarmListState extends State<AlarmList> {
 
       await _alarmService.scheduleAlarm(newAlarm);
       
+      // Update in memory
       setState(() {
         _alarms.add(newAlarm);
       });
+      
+      // Save to storage
+      await AlarmStorageService.saveAlarms(_alarms);
     } catch (e) {
       _showError('Failed to add alarm');
     }
+  }
+
+  /// Refresh alarms from storage
+  Future<void> refreshAlarms() async {
+    await _loadAlarms();
   }
 
   /// Show error message
@@ -81,6 +134,15 @@ class AlarmListState extends State<AlarmList> {
 
   @override
   Widget build(BuildContext context) {
+    // Show loading indicator
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
     // Handle empty state
     if (_alarms.isEmpty) {
       return const Center(
