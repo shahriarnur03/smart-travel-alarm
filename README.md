@@ -102,10 +102,6 @@ Platform notes
 | --------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
 | <img src="assets/screenshots/set_date.png" width="250" /> | <img src="assets/screenshots/set_time.png" width="250" /> | <img src="assets/screenshots/alarm_ringing.png" width="250" /> |
 
-Additional captures:
-
--   `assets/screenshots/Screenshot_20250927-080920.png`
--   `assets/screenshots/Screenshot_20250927-081001.png`
 
 ## 🧪 How to verify features
 
@@ -133,4 +129,4 @@ Additional captures:
 
 ---
 
-If you’re reviewing this for an interview: the code is structured to highlight clarity, separation of concerns, and practical use of Flutter ecosystems (GetX, local notifications, geolocation) while keeping the UI polished and responsive. 🙌
+The code is structured to highlight clarity, separation of concerns, and practical use of Flutter ecosystems (GetX, local notifications, geolocation) while keeping the UI polished and responsive. 🙌
