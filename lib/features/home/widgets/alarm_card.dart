@@ -19,7 +19,7 @@ class AlarmCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
         color: const Color(0xFF201A42),
         borderRadius: BorderRadius.circular(89),
@@ -30,8 +30,7 @@ class AlarmCard extends StatelessWidget {
             child: Text(
               time,
               style: AppTextStyles.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
+                fontSize: 18,
               ),
             ),
           ),

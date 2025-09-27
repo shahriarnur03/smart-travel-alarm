@@ -269,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const Icon(
                       Icons.add,
                       color: Colors.white,
-                      size: 34,
+                      size: 40,
                     ),
                   ),
                 ),

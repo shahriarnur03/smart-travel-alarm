@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LocationButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -15,7 +16,7 @@ class LocationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 50,
+      height: 56,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
@@ -37,7 +38,7 @@ class LocationButton extends StatelessWidget {
               style: TextStyle(
                 color: isLoading ? Colors.white.withValues(alpha: 0.7) : Colors.white,
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontFamily: GoogleFonts.poppins().fontFamily,
               ),
             ),
             const SizedBox(width: 8),

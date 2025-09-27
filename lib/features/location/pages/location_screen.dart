@@ -102,6 +102,7 @@ class _LocationScreenState extends State<LocationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 26),
               Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -113,26 +114,26 @@ class _LocationScreenState extends State<LocationScreen> {
                     Text(
                       'Welcome! Your Smart Travel Alarm',
                       style: AppTextStyles.poppins(
-                        fontSize: 28,
+                        fontSize: 30,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     Text(
                       'Stay on schedule and enjoy every \nmoment of your journey.',
-                      style: AppTextStyles.poppins(fontSize: 16),
+                      style: AppTextStyles.poppins(fontSize: 19),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 26),
               Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  height: MediaQuery.of(context).size.width * 0.6,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.width * 0.9,
                   constraints: const BoxConstraints(
-                    maxWidth: 296,
-                    maxHeight: 296,
+                    maxWidth: 315,
+                    maxHeight: 315,
                     minWidth: 200,
                     minHeight: 200,
                   ),
@@ -145,7 +146,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 30),
               if (_currentLocation != null)
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),

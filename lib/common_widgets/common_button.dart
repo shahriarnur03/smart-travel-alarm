@@ -12,7 +12,7 @@ class CommonButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.width = double.infinity,
-    this.height = 50,
+    this.height = 56,
   });
 
   @override
@@ -34,7 +34,7 @@ class CommonButton extends StatelessWidget {
           text,
           style: AppTextStyles.poppins(
             fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
