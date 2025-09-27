@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 import 'package:smart_travel_alarm/common_widgets/app_background.dart';
 import 'package:smart_travel_alarm/constants/app_text_styles.dart';
 import 'package:smart_travel_alarm/features/home/widgets/alarm_list.dart';
+import 'package:smart_travel_alarm/features/location/controllers/location_controller.dart';
 import 'package:smart_travel_alarm/helpers/alarm_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,11 +19,36 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<AlarmListState> _alarmListKey = GlobalKey<AlarmListState>();
   final AlarmService _alarmService = AlarmService();
+  final TextEditingController _locationController = TextEditingController();
+  late final LocationController locationController;
 
   @override
   void initState() {
     super.initState();
+    // Simple: Get or create the LocationController
+    locationController = Get.put(LocationController());
     _requestNotificationPermissions();
+    _initializeLocation();
+  }
+
+  void _initializeLocation() {
+    locationController.initializeLocation(widget.selectedLocation);
+    if (widget.selectedLocation != null) {
+      _locationController.text = widget.selectedLocation!;
+    }
+    
+    // Listen to location controller changes and update text field
+    ever(locationController.currentLocation, (String? location) {
+      if (location != null && mounted) {
+        _locationController.text = location;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose();
+    super.dispose();
   }
 
   // Request notification permissions with proper error handling
@@ -186,13 +213,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 20),
                     
                     // Selected Location Section
-                    Text(
-                      widget.selectedLocation ?? 'Selected Location',
+                    Obx(() => Text(
+                      locationController.currentLocation.value ?? 'Selected Location',
                       style: AppTextStyles.poppins(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                       ),
-                    ),
+                    )),
 
                     const SizedBox(height: 16),
 
@@ -200,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       height: 56,
                       child: TextField(
+                        controller: _locationController,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: const Color(0xFF201A42),
@@ -207,15 +235,31 @@ class _HomeScreenState extends State<HomeScreen> {
                             vertical: 10,
                             horizontal: 16,
                           ),
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Image.asset(
-                              'assets/images/location_icon.png',
-                              width: 20,
-                              height: 20,
-                              color: Colors.white,
+                          prefixIcon: Obx(() => Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: locationController.isLoading.value ? null : locationController.getCurrentLocation,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: locationController.isLoading.value
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        ),
+                                      )
+                                    : Image.asset(
+                                        'assets/images/location_icon.png',
+                                        width: 20,
+                                        height: 20,
+                                        color: Colors.white,
+                                      ),
+                              ),
                             ),
-                          ),
+                          )),
                           hintText: 'Add your location',
                           hintStyle: const TextStyle(
                             color: Color.fromRGBO(255, 255, 255, 0.27),
@@ -226,6 +270,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         style: const TextStyle(color: Colors.white),
+                        onChanged: (value) {
+                          locationController.setLocation(value);
+                        },
                       ),
                     ),
 

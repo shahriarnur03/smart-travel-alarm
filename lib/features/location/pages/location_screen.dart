@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:smart_travel_alarm/common_widgets/app_background.dart';
 import 'package:smart_travel_alarm/common_widgets/common_button.dart';
 import 'package:smart_travel_alarm/constants/app_text_styles.dart';
 import 'package:smart_travel_alarm/features/home/pages/home_screen.dart';
+import 'package:smart_travel_alarm/features/location/controllers/location_controller.dart';
 import 'package:smart_travel_alarm/features/location/widgets/location_button.dart';
-import 'package:smart_travel_alarm/helpers/location_service.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
@@ -15,52 +16,36 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  bool _isLoadingLocation = false;
-  String? _currentLocation;
+  late final LocationController locationController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Simple: Get or create the LocationController
+    locationController = Get.put(LocationController());
+  }
 
   Future<void> _getCurrentLocation() async {
-    setState(() {
-      _isLoadingLocation = true;
-    });
-
-    try {
-      Map<String, dynamic>? locationData = await LocationService.getCurrentLocationWithAddress();
-      
-      if (locationData != null) {
-        setState(() {
-          _currentLocation = locationData['address'];
-        });
-        
-        // Show success dialog
-        String message = 'Your current location: ${locationData['address']}';
-        if (locationData['address'].toString().contains('Lat:')) {
-          message += '\n\n(Address lookup failed)';
-        }
-        
-        _showLocationDialog(
-          'Location Found',
-          message,
-          true,
-        );
-      } else {
-        // Show error dialog
-        _showLocationDialog(
-          'Location Error',
-          'Unable to get your location. Please check if location services are enabled and permissions are granted.',
-          false,
-        );
+    await locationController.getCurrentLocation();
+    
+    // Show success dialog if location was found
+    if (locationController.currentLocation.value != null) {
+      String message = 'Your current location: ${locationController.currentLocation.value}';
+      if (locationController.currentLocation.value!.contains('Lat:')) {
+        message += '\n\n(Address lookup failed)';
       }
-    } catch (e) {
-      // Simple error handling
+      
+      _showLocationDialog(
+        'Location Found',
+        message,
+        true,
+      );
+    } else if (locationController.hasError.value) {
       _showLocationDialog(
         'Location Error',
-        'Unable to get location. Please check your GPS and location permissions.',
+        locationController.errorMessage.value,
         false,
       );
-    } finally {
-      setState(() {
-        _isLoadingLocation = false;
-      });
     }
   }
 
@@ -147,41 +132,42 @@ class _LocationScreenState extends State<LocationScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              if (_currentLocation != null)
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 20,
+              Obx(() => locationController.currentLocation.value != null
+                  ? Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _currentLocation!,
-                          style: const TextStyle(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
                             color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                            size: 20,
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              locationController.currentLocation.value!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    )
+                  : const SizedBox.shrink()),
               const SizedBox(height: 16),
-              LocationButton(
+              Obx(() => LocationButton(
                 onPressed: _getCurrentLocation,
-                isLoading: _isLoadingLocation,
-              ),
+                isLoading: locationController.isLoading.value,
+              )),
               const SizedBox(height: 16),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -191,7 +177,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreen(selectedLocation: _currentLocation),
+                        builder: (context) => HomeScreen(selectedLocation: locationController.currentLocation.value),
                       ),
                     );
                   },
